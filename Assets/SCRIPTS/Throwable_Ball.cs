@@ -5,27 +5,38 @@ public class Throwable_Ball : MonoBehaviour
 {
     public GameObject ballPrefab;
     public Transform throwOrigin;
-    public float throwForce = 10f;
+    public float throwForce = 5f;
+    private bool hasThrown = false;
 
     void Update()
     {
-        if (OVRInput.GetDown(OVRInput.Button.PrimaryIndexTrigger) || Input.GetMouseButtonDown(0))
-        {
-            ThrowBall();
-        }
+        // Reset hasThrown flag in Update
+        hasThrown = false;
     }
 
     void ThrowBall()
     {
-        GameObject ball = Instantiate(ballPrefab, throwOrigin.position, throwOrigin.rotation);
-        Rigidbody rb = ball.GetComponent<Rigidbody>();
-        if (rb != null)
+        if (!hasThrown) // Only throw if a ball hasn't been thrown in this frame
         {
-            rb.velocity = throwOrigin.forward * throwForce;
+            GameObject ball = Instantiate(ballPrefab, throwOrigin.position, throwOrigin.rotation);
+            Rigidbody rb = ball.GetComponent<Rigidbody>();
+            if (rb != null)
+            {
+                rb.velocity = throwOrigin.forward * throwForce;
+            }
+            else
+            {
+                Debug.LogWarning("Rigidbody not found in ball prefab.");
+            }
+            hasThrown = true; // Set hasThrown to true after throwing
         }
-        else
+    }
+
+    void FixedUpdate()
+    {
+        if (!hasThrown && (OVRInput.GetDown(OVRInput.Button.PrimaryIndexTrigger) || Input.GetMouseButtonDown(0)))
         {
-            Debug.LogWarning("Rigidbody not found in ball prefab.");
+            ThrowBall();
         }
     }
 }

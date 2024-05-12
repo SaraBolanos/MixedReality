@@ -6,6 +6,7 @@ TagManager:
   tags:
   - EffectMesh
   - Ball
+  - Hand
   layers:
   - Default
   - TransparentFX

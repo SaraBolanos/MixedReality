@@ -8,9 +8,55 @@ public class DogMovement : MonoBehaviour
     public Transform dog;
     public float movementSpeed = 5f;
     public float stoppingDistance = 1f;
-    bool touching = false;
+    public Transform returnPosition;
+    public Transform waitPosition; // Position where the dog waits after dropping the ball
+    public float ballPickupDistance = 1.5f;
+
+    private enum DogState
+    {
+        MovingToBall,
+        TakingBall,
+        Returning,
+        Waiting,
+        MovingToWaitPosition
+    }
+
+    private DogState currentState = DogState.Waiting;
+    private Vector3 initialPosition;
+
+    void Start()
+    {
+        initialPosition = dog.position;
+    }
 
     void Update()
+    {
+        switch (currentState)
+        {
+            case DogState.MovingToBall:
+                MoveToBall();
+                break;
+            case DogState.TakingBall:
+                TakeBall();
+                break;
+            case DogState.Returning:
+                ReturnWithBall();
+                break;
+            case DogState.Waiting:
+                // In this state, dog waits at the designated position
+                break;
+            case DogState.MovingToWaitPosition:
+                MoveToWaitPosition();
+                break;
+        }
+
+        if ( currentState == DogState.Waiting && ball.GetComponent<BallLogic>().IsGrabbed() == false &&  Vector3.Distance(ball.position, returnPosition.position) > 2f)
+        {
+            currentState = DogState.MovingToBall;
+        }
+    }
+
+    public void MoveToBall()
     {
         // Calculate direction to the ball
         Vector3 directionToBall = (ball.position - dog.position).normalized;
@@ -21,58 +67,84 @@ public class DogMovement : MonoBehaviour
             dog.rotation = Quaternion.LookRotation(directionToBall);
         }
 
-        // Raycast to detect obstacles
-        RaycastHit hit;
-        if (touching == false)
+        // Move the dog directly towards the ball
+        dog.position = Vector3.MoveTowards(dog.position, ball.position, movementSpeed * Time.deltaTime);
+
+        // Check if the dog is close enough to the ball to take it
+        if (Vector3.Distance(dog.position, ball.position) <= ballPickupDistance)
         {
-            if (Physics.Raycast(dog.position, directionToBall, out hit, Mathf.Infinity))
-            {
-                // If the ray hits something, move the dog to a position just before the obstacle
-                float distanceToObstacle = hit.distance;
-                Vector3 targetPosition = dog.position + directionToBall * Mathf.Max(0, distanceToObstacle - stoppingDistance);
-                dog.position = Vector3.MoveTowards(dog.position, targetPosition, movementSpeed * Time.deltaTime);
-
-                // Visualize the raycast
-                Debug.DrawLine(dog.position, hit.point, Color.red);
-            }
-            else
-            {
-                // Move the dog directly towards the ball
-                dog.position = Vector3.MoveTowards(dog.position, ball.position, movementSpeed * Time.deltaTime);
-
-                // Visualize the raycast
-                Debug.DrawRay(dog.position, directionToBall * 1000f, Color.green);
-            }
+            currentState = DogState.TakingBall;
         }
     }
-    
-   /*private void OnCollisionEnter(Collision collision)
-    {
-        // Check if the collided object has the tag "Ball"
-        if (collision.collider.CompareTag("Ball"))
-        {
-            touching = true;
-            // Parent the collided object to this GameObject
-           /* collision.transform.parent = transform;
 
-            // Set the position of the collided object to a specific offset
-            collision.transform.position = new Vector3(
-                transform.position.x + 0.013f,
-                transform.position.y + 0.873f,
-                transform.position.z - 0.639f
-            );*/
-       /* }
-    }*/
-
-    /*private void OnCollisionExit(Collision collision)
+    public void TakeBall()
     {
-        if (collision.collider.CompareTag("Ball"))
+        // Dog takes the ball (you can implement any specific behavior here)
+        ball.parent = dog;
+
+        // Change state to returning
+        currentState = DogState.Returning;
+    }
+
+    public void ReturnWithBall()
+    {
+        // Calculate direction to return position
+        Vector3 directionToReturn = (returnPosition.position - dog.position).normalized;
+
+        // Look towards the return position
+        if (directionToReturn != Vector3.zero)
         {
-            touching = false;
+            dog.rotation = Quaternion.LookRotation(directionToReturn);
         }
-    }*/
 
+        // Move the dog directly towards the return position
+        dog.position = Vector3.MoveTowards(dog.position, returnPosition.position, movementSpeed * Time.deltaTime);
 
+        // Check if the dog has reached the return position
+        if (Vector3.Distance(dog.position, returnPosition.position) <= stoppingDistance)
+        {
 
+            ball.position = returnPosition.position;
+            ball.GetComponent<Rigidbody>().position = returnPosition.position;
+            // Dog drops the ball (you can implement any specific behavior here)
+            ball.parent = null;
 
+            // Change state to moving to wait position
+            currentState = DogState.MovingToWaitPosition;
+        }
+    }
+
+    public void MoveToWaitPosition()
+    {
+        // Calculate direction to wait position
+        Vector3 directionToWait = (waitPosition.position - dog.position).normalized;
+
+        // Look towards the wait position
+        if (directionToWait != Vector3.zero)
+        {
+            dog.rotation = Quaternion.LookRotation(directionToWait);
+        }
+
+        // Move the dog directly towards the wait position
+        dog.position = Vector3.MoveTowards(dog.position, waitPosition.position, movementSpeed * Time.deltaTime);
+
+        // Check if the dog has reached the wait position
+        if (Vector3.Distance(dog.position, waitPosition.position) <= stoppingDistance)
+        {
+
+            // Change state to waiting
+            dog.position = waitPosition.position;
+
+            Vector3 directionToBall = (ball.position - dog.position).normalized;
+
+            // Look towards the ball
+            if (directionToBall != Vector3.zero)
+            {
+                dog.rotation = Quaternion.LookRotation(directionToBall);
+            }
+
+            currentState = DogState.Waiting;
+        }
+        
+    }
 }

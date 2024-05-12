@@ -9056,6 +9056,7 @@ GameObject:
   - component: {fileID: 575208170}
   - component: {fileID: 575208169}
   - component: {fileID: 575208175}
+  - component: {fileID: 575208176}
   m_Layer: 0
   m_Name: '[BuildingBlock] Cube'
   m_TagString: Untagged
@@ -9207,6 +9208,19 @@ MonoBehaviour:
   ballPrefab: {fileID: 575208168}
   throwOrigin: {fileID: 974922302}
   throwForce: 5
+--- !u!114 &575208176
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 575208168}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 75895172c1e672c42b3752194ad038c4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  dogPathfinding: {fileID: 0}
 --- !u!1 &575513149
 GameObject:
   m_ObjectHideFlags: 0
@@ -10791,7 +10805,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6381190578936783005, guid: adb11d902b2436d428d60c75729665a6, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 0.708
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 6381190578936783005, guid: adb11d902b2436d428d60c75729665a6, type: 3}
       propertyPath: m_LocalPosition.z
@@ -10835,7 +10849,18 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 6036331658564139559, guid: adb11d902b2436d428d60c75729665a6, type: 3}
       insertIndex: -1
       addedObject: {fileID: 1715108845}
+    - targetCorrespondingSourceObject: {fileID: 6036331658564139559, guid: adb11d902b2436d428d60c75729665a6, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1715108847}
+    - targetCorrespondingSourceObject: {fileID: 6036331658564139559, guid: adb11d902b2436d428d60c75729665a6, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1715108848}
   m_SourcePrefab: {fileID: 100100000, guid: adb11d902b2436d428d60c75729665a6, type: 3}
+--- !u!4 &683616833 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 6381190578936783005, guid: adb11d902b2436d428d60c75729665a6, type: 3}
+  m_PrefabInstance: {fileID: 683616832}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &684855386
 GameObject:
   m_ObjectHideFlags: 0
@@ -25396,6 +25421,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: EffectMesh
       objectReference: {fileID: 0}
+    - target: {fileID: 5456522116536683071, guid: cee191920b8eb41b0960b1082a393a3e, type: 3}
+      propertyPath: m_TagString
+      value: EffectMesh
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -31426,6 +31455,49 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 0.34188056, y: 0.7663658, z: 1}
   m_Center: {x: -0.015686609, y: 0.40136167, z: 0}
+--- !u!54 &1715108847
+Rigidbody:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1715108841}
+  serializedVersion: 4
+  m_Mass: 5
+  m_Drag: 0
+  m_AngularDrag: 0.05
+  m_CenterOfMass: {x: 0, y: 0, z: 0}
+  m_InertiaTensor: {x: 1, y: 1, z: 1}
+  m_InertiaRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ImplicitCom: 1
+  m_ImplicitTensor: 1
+  m_UseGravity: 1
+  m_IsKinematic: 0
+  m_Interpolate: 0
+  m_Constraints: 80
+  m_CollisionDetection: 0
+--- !u!114 &1715108848
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1715108841}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 783910004eba22c49bb43fde94716dad, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ball: {fileID: 575208174}
+  dog: {fileID: 683616833}
+  movementSpeed: 1
+  stoppingDistance: 1
 --- !u!1 &1715110161
 GameObject:
   m_ObjectHideFlags: 0

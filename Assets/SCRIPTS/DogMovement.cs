@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -43,7 +44,8 @@ public class DogMovement : MonoBehaviour
                 ReturnWithBall();
                 break;
             case DogState.Waiting:
-                // In this state, dog waits at the designated position
+                Wait();
+               // In this state, dog waits at the designated position
                 break;
             case DogState.MovingToWaitPosition:
                 MoveToWaitPosition();
@@ -54,6 +56,13 @@ public class DogMovement : MonoBehaviour
         {
             currentState = DogState.MovingToBall;
         }
+    }
+
+    private void Wait()
+    {
+        Vector3 directionToBall = (ball.position - dog.position).normalized;
+        //do nothing
+        dog.rotation = Quaternion.LookRotation(directionToBall);
     }
 
     public void MoveToBall()
